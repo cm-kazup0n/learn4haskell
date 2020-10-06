@@ -541,14 +541,13 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
+mid:: Int -> Int -> Int -> Int
 mid x y z
     | x>= y && y >= z = y
-    | x>= z && z >= y = z
     | y>= x && x >= z = x
-    | y>= z && z >= x = z
     | z>= x && x >= y = x
     | z>= y && y >= x = y
+    | otherwise = z
 {- |
 =⚔️= Task 8
 
@@ -633,9 +632,9 @@ specifying complex expressions.
 
 sumLast2::Int -> Int
 sumLast2 n =
-  let f = (abs n) `mod` 10
-      s = ((abs n) `div` 10) `mod` 10
-  in (f + s)
+  let 
+    (first, second) = divMod (mod (abs n) 100) 10
+    in (first + second)
 
 {- |
 =💣= Task 10*
