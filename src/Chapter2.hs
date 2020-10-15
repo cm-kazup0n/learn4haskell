@@ -337,10 +337,9 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList s e as
-      | (s < 0) || (e < 0) = []
-      | otherwise = take (e-s + 1) .  drop s $ as
--- subList (-1) 5 [0..5] 5 -(-1)+1
--- subList 3,5
+      | s < 0 = []
+      | s > e = []
+      | otherwise = take (e-s + 1) . drop s $ as
 {- |
 =⚔️= Task 4
 
@@ -610,7 +609,6 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate [h] = [h, h]
 duplicate (h:rest) = h:h:(duplicate rest)
 duplicate [] = []
 
@@ -737,9 +735,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
--- smartReplicate l = (>>=) l (\n -> replicate n n)
-smartReplicate (x:xs) = (replicate x x) ++ (smartReplicate xs)
-smartReplicate [] = []
+smartReplicate = concatMap (\x -> replicate x x)
 
 {- |
 =⚔️= Task 9
@@ -753,7 +749,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Eq a => a -> [[a]] -> [[a]]
-contains x xss = filter (\xs -> elem x xs) xss
+contains x = filter (\xs -> elem x xs)
 
 
 {- |
@@ -876,8 +872,12 @@ and reverses it.
   cheating!
 -}
 rewind:: [a] -> [a]
-rewind (a:rest)= (rewind rest) ++ [a]
-rewind [] = []
+rewind as = (go [] as)
+  where
+    go:: [a] -> [a] -> [a]
+    go acc (h:rest) = go (h:acc) rest
+    go acc [] = acc
+
 
 
 {-
